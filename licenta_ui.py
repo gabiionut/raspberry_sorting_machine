@@ -1,20 +1,44 @@
 import sys
-import matplotlib.pyplot as plt
 from datetime import datetime
+from threading import Timer,Thread,Event
+from time import sleep
 
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QRadioButton
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QGridLayout, QDial
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import pyqtSlot
 
+from motor import start, stop, right, left, clear
+from form_detection import run, stopDetection
+from ir_sensor import objectDetected
+
+class MyThread(Thread):
+    def __init__(self, event):
+        Thread.__init__(self)
+        self.stopped = False
+
+    def run(self):
+        while not self.stopped:
+            if objectDetected():
+              print("Object detected")
+              sleep(3)
+              stop()
+              run()
+        
+    def kill(self):
+        self.stopped = True
+        
+
 class Window(QWidget):
     def __init__(self):
+        self.stopFlag = False
+        self.thread = MyThread(self.stopFlag)
         QWidget.__init__(self)
         layout = QGridLayout()
         self.setLayout(layout)
 
         self.setWindowTitle('Timer')
-        self.setFixedSize(480, 320)
+        #self.setFixedSize(480, 320)
 
         self.start_btn = QPushButton(self)
         self.start_btn.setText("Start")
@@ -53,22 +77,32 @@ class Window(QWidget):
         self.radiobutton.sortingType = 3
         self.radiobutton.toggled.connect(self.onClicked)
         layout.addWidget(self.radiobutton, 2, 2)
+        #self.showFullScreen()
 
     def sliderMoved(self):
         print("Dial value = %i" % (self.dial.value()))
 
     def start_clicked(self):
         print("Start clicked")
-        pixmap = QPixmap('100.png')
+        pixmap = QPixmap('image.jpg')
         self.label.setPixmap(pixmap)
+        start()
+        self.thread = MyThread(self.stopFlag)
+        self.startThread()
 
     def stop_clicked(self):
         print("Stop clicked")
+        stop()
+        self.thread.kill()
     
     def onClicked(self):
         radioButton = self.sender()
         if radioButton.isChecked():
             print("Sortarea: %s" % (radioButton.sortingType))
+            
+    def startThread(self):
+        self.stopFlag = False
+        self.thread.start()
 
 app = QApplication(sys.argv)
 screen = Window()

@@ -8,17 +8,13 @@ def getContours(img, imgContour):
     form = None
     for cnt in contours:
         area = cv2.contourArea(cnt)
-        print (area)
-        #TODO: delete tracbar areaMin
-        areaMin = cv2.getTrackbarPos("Area", "Parameters")
-        print(areaMin)
+        areaMin = 5000
         if area > areaMin:
             cv2.drawContours(imgContour, cnt, -1, (255, 0, 255), 7)
             peri = cv2.arcLength(cnt, True)
             approx = cv2.approxPolyDP(cnt, 0.02 * peri, True)
             corners = len(approx)
             area = int(area)
-            print(corners)
             form = Form(corners, area, 'red')
 
             # Draw result on image

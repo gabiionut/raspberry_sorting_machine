@@ -6,18 +6,12 @@ from resize import resize
 from picamera import PiCamera
 from time import sleep
 from motor import start, stop, right, left, clear
-from ir_sensor import objectDetected
 
+camera = PiCamera()
+stopped = False
 
 def empty(a):
     pass
-
-# TODO: delete next lines after threshold found
-cv2.namedWindow("Parameters")
-cv2.resizeWindow("Parameters", 640, 240)
-cv2.createTrackbar("Threshold1", "Parameters", 40, 255, empty)
-cv2.createTrackbar("Threshold2", "Parameters", 40, 255, empty)
-cv2.createTrackbar("Area", "Parameters", 5000, 30000, empty)
 
 def classifyForm(form):
     # By form
@@ -27,12 +21,16 @@ def classifyForm(form):
         left()
         sleep(1)
         start()
+        sleep(15)
+        right()
     if form.corners == 3:
         print("Triunghi")
         sleep(1)
         right()
         sleep(1)
         start()
+        sleep(12)
+        left()
     if form.corners == 6:
         print("Hexagon")
 
@@ -50,17 +48,8 @@ def classifyForm(form):
     
 
 def run():
-    start()
-    sleep(1)
-    while True:
-      if objectDetected():
-          print("Object detected")
-          sleep(2)
-          stop()
-          break
     #left()
     #GPIO.cleanup()
-    camera = PiCamera()
     #camera.crop(0.25, 0.25, 0.5, 0.5)
     #camera.start_preview()
     camera.capture('image.jpg')
@@ -73,12 +62,8 @@ def run():
     imgBlur = cv2.GaussianBlur(img, (7, 7), 1)
     imgGray = cv2.cvtColor(imgBlur, cv2.COLOR_BGR2GRAY)
 
-
-    # TODO: delete next two lines after threshold found
-    threshold1 = cv2.getTrackbarPos("Threshold1", "Parameters")
-    threshold2 = cv2.getTrackbarPos("Threshold2", "Parameters")
-    print(threshold1)
-    print(threshold2)
+    threshold1 = 40
+    threshold2 = 40
 
     imgCanny = cv2.Canny(imgGray, threshold1, threshold2)
     kernel = np.ones((5, 5))
@@ -86,11 +71,17 @@ def run():
 
     form = getContours(imgDil, imgContour)
     classifyForm(form)
+    
+    imgContour = resize(imgContour, 10)
+    cv2.imwrite('output.jpg', imgContour)
 
-    imgStack = stackImages(0.8, ([img, imgCanny],
-                                 [imgDil, imgContour]))
-    cv2.imshow("Result", imgStack)
-    cv2.waitKey(0)
-    stop()
-    clear()
-run()
+    #imgStack = stackImages(0.8, ([img, imgCanny],
+                                 #[imgDil, imgContour]))
+    #cv2.imshow("Result", imgStack)
+    #cv2.waitKey(0)
+    #stop()
+    #clear()
+def stopDetection():
+    stopped = True
+#while True:
+    #run()
