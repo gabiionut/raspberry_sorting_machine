@@ -8,25 +8,25 @@ from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QGridLayout, QDi
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import pyqtSlot
 
-# from motor import start, stop, right, left, clear
-# from form_detection import run, stopDetection
-# from ir_sensor import objectDetected
+from motor import start, stop, right, left, clear
+from form_detection import run, stopDetection
+from ir_sensor import objectDetected
 
-# class MyThread(Thread):
-#     def __init__(self, event):
-#         Thread.__init__(self)
-#         self.stopped = False
+class MyThread(Thread):
+    def __init__(self, event):
+        Thread.__init__(self)
+        self.stopped = False
 
-#     def run(self):
-#         while not self.stopped:
-#             if objectDetected():
-#               print("Object detected")
-#               sleep(3)
-#               stop()
-#               run()
+    def run(self):
+        while not self.stopped:
+            if objectDetected():
+              print("Object detected")
+              sleep(3)
+              stop()
+              run()
         
-#     def kill(self):
-#         self.stopped = True
+    def kill(self):
+        self.stopped = True
         
 
 class Window(QWidget):
@@ -55,12 +55,12 @@ class Window(QWidget):
         self.stop_btn.clicked.connect(self.stop_clicked)
         layout.addWidget(self.stop_btn, 0, 2)
 
-        # self.dial = QDial()
-        # self.dial.setMinimum(1)
-        # self.dial.setMaximum(10)
-        # self.dial.setValue(2)
-        # self.dial.valueChanged.connect(self.sliderMoved)
-        # layout.addWidget(self.dial, 1, 0)
+        self.dial = QDial()
+        self.dial.setMinimum(1)
+        self.dial.setMaximum(10)
+        self.dial.setValue(2)
+        self.dial.valueChanged.connect(self.sliderMoved)
+        layout.addWidget(self.dial, 1, 0)
 
         self.radiobutton = QRadioButton("Forma")
         self.radiobutton.sortingType = 1
@@ -84,9 +84,9 @@ class Window(QWidget):
 
     def start_clicked(self):
         print("Start clicked")
-        # start()
-        # self.thread = MyThread(self.stopFlag)
-        # self.startThread()
+        start()
+        self.thread = MyThread(self.stopFlag)
+        self.startThread()
 
     def updateImage(self):
         pixmap = QPixmap('image.jpg')
@@ -94,8 +94,8 @@ class Window(QWidget):
 
     def stop_clicked(self):
         print("Stop clicked")
-        # stop()
-        # self.thread.kill()
+        stop()
+        self.thread.kill()
     
     def onClicked(self):
         radioButton = self.sender()
