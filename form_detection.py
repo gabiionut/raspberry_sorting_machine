@@ -47,7 +47,7 @@ def classifyForm(form):
     # TODO: By color
     
 
-def run():
+def run(updateImageSignal):
     #left()
     #GPIO.cleanup()
     #camera.crop(0.25, 0.25, 0.5, 0.5)
@@ -70,10 +70,10 @@ def run():
     imgDil = cv2.dilate(imgCanny, kernel, iterations=1)
 
     form = getContours(imgDil, imgContour)
-    classifyForm(form)
-    
-    imgContour = resize(imgContour, 10)
+    imgContour = resize(imgContour, 50)
     cv2.imwrite('output.jpg', imgContour)
+    updateImageSignal.emit()
+    classifyForm(form)
 
     #imgStack = stackImages(0.8, ([img, imgCanny],
                                  #[imgDil, imgContour]))
