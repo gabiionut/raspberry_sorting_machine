@@ -13,8 +13,15 @@ stopped = False
 def empty(a):
     pass
 
-def classifyForm(form):
-    # By form
+def classifyForm(form, mode):
+    if mode == 1:
+        byForm(form)
+    if mode == 2:
+        bySize(form)
+    if mode == 3:
+        byColor(form)
+        
+def byForm(form):
     if form.corners == 4:
         print("Patrulater")
         sleep(1)
@@ -34,20 +41,22 @@ def classifyForm(form):
     if form.corners == 6:
         print("Hexagon")
 
-    # By size
-    #if (form.area <= 35792):
-        #print("Small")
-        #start()
-        #left()
-    #if (form.area > 35792):
-        #print("Big")
-        #start()
-        #right()
+def bySize(form):
+    if (form.area <= 35792):
+        print("Small")
+        start()
+        left()
+    if (form.area > 35792):
+        print("Big")
+        start()
+        right()
 
+def byColor(form):
     # TODO: By color
+    print("By color")
     
 
-def run(updateImageSignal):
+def run(updateImageSignal, mode):
     #left()
     #GPIO.cleanup()
     #camera.crop(0.25, 0.25, 0.5, 0.5)
@@ -73,7 +82,7 @@ def run(updateImageSignal):
     imgContour = resize(imgContour, 50)
     cv2.imwrite('output.jpg', imgContour)
     updateImageSignal.emit()
-    classifyForm(form)
+    classifyForm(form, mode)
 
     #imgStack = stackImages(0.8, ([img, imgCanny],
                                  #[imgDil, imgContour]))
@@ -81,7 +90,4 @@ def run(updateImageSignal):
     #cv2.waitKey(0)
     #stop()
     #clear()
-def stopDetection():
-    stopped = True
-#while True:
-    #run()
+

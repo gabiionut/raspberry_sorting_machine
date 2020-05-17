@@ -15,6 +15,12 @@ def getContours(img, imgContour):
             approx = cv2.approxPolyDP(cnt, 0.02 * peri, True)
             corners = len(approx)
             area = int(area)
+            
+            grain = numpy.int0(cv2.boxPoints(cv2.minAreaRect(cnt)))
+            centroid = grain[2][1] - (grain[2][1]-grain[0][1])//2, grain[2][0] - (grain[2][0]-grain[0][0])//2
+            print(centroid)
+            color = image[centroid]
+            print(image)
             form = Form(corners, area, 'red')
 
             # Draw result on image

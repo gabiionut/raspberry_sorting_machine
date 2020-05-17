@@ -3,11 +3,11 @@ from time import sleep
 
 GPIO.setmode(GPIO.BCM)
 
-pinForward = 23
-pinReverse = 24
+pinForward = 20
+pinReverse = 21
 
-pinForwardBand = 22
-pinReverseBand = 27
+pinForwardBand = 19
+pinReverseBand = 26
 
 GPIO.setup(pinForward, GPIO.OUT)
 GPIO.setup(pinReverse, GPIO.OUT)

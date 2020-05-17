@@ -9,14 +9,15 @@ from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import pyqtSlot, pyqtSignal, QObject
 
 from motor import start, stop, right, left, clear
-from form_detection import run, stopDetection
+from form_detection import run
 from ir_sensor import objectDetected
 
 class MyThread(Thread):
-    def __init__(self, event, updateImageSignal):
+    def __init__(self, event, updateImageSignal, mode):
         Thread.__init__(self)
         self.stopped = False
         self.updateImageSignal = updateImageSignal
+        self.mode = mode
 
     def run(self):
         while not self.stopped:
@@ -24,7 +25,7 @@ class MyThread(Thread):
               print("Object detected")
               sleep(3)
               stop()
-              run(self.updateImageSignal)
+              run(self.updateImageSignal, self.mode)
         
     def kill(self):
         self.stopped = True
@@ -60,16 +61,10 @@ class Window(QWidget, QObject):
         self.stop_btn.clicked.connect(self.stop_clicked)
         layout.addWidget(self.stop_btn, 1, 1)
 
-        #self.dial = QDial()
-        #self.dial.setMinimum(1)
-        #self.dial.setMaximum(10)
-        #self.dial.setValue(2)
-        #self.dial.valueChanged.connect(self.sliderMoved)
-        #layout.addWidget(self.dial, 1, 0)
-
         self.radiobutton = QRadioButton("Forma")
         self.radiobutton.sortingType = 1
         self.radiobutton.setChecked(True)
+        self.mode = 1
         self.radiobutton.toggled.connect(self.onClicked)
         layout.addWidget(self.radiobutton, 2, 0)
 
@@ -82,7 +77,7 @@ class Window(QWidget, QObject):
         self.radiobutton.sortingType = 3
         self.radiobutton.toggled.connect(self.onClicked)
         layout.addWidget(self.radiobutton, 2, 2)
-        #self.showFullScreen()
+        self.showFullScreen()
 
     def sliderMoved(self):
         print("Dial value = %i" % (self.dial.value()))
@@ -90,7 +85,7 @@ class Window(QWidget, QObject):
     def start_clicked(self):
         print("Start clicked")
         start()
-        self.thread = MyThread(self.stopFlag, self.updateImageSignal)
+        self.thread = MyThread(self.stopFlag, self.updateImageSignal, self.mode)
         self.startThread()
 
     def updateImage(self):
@@ -105,6 +100,7 @@ class Window(QWidget, QObject):
     def onClicked(self):
         radioButton = self.sender()
         if radioButton.isChecked():
+            self.mode = radioButton.sortingType
             print("Sortarea: %s" % (radioButton.sortingType))
             
     def startThread(self):
