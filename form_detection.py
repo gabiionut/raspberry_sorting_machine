@@ -78,7 +78,7 @@ def run(updateImageSignal, mode):
     kernel = np.ones((5, 5))
     imgDil = cv2.dilate(imgCanny, kernel, iterations=1)
 
-    form = getContours(imgDil, imgContour)
+    form = getContours(imgDil, imgContour, img)
     imgContour = resize(imgContour, 50)
     cv2.imwrite('output.jpg', imgContour)
     updateImageSignal.emit()

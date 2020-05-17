@@ -2,7 +2,7 @@ import cv2
 import numpy
 from form import Form
 
-def getContours(img, imgContour):
+def getContours(img, imgContour, ogImage):
     contours, image = cv2.findContours(
         img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     form = None
@@ -15,12 +15,14 @@ def getContours(img, imgContour):
             approx = cv2.approxPolyDP(cnt, 0.02 * peri, True)
             corners = len(approx)
             area = int(area)
+            #x,y,w,h = cv2.boundingRect(cnt) # offsets - with this you get 'mask'
+            #cv2.rectangle(ogImage,(x,y),(x+w,y+h),(0,255,0),2)
+            #rint('Average color (BGR): ',numpy.array(cv2.mean(ogImage[y:y+h,x:x+w])).astype(numpy.uint8))
+            mask = numpy.zeros(img.shape, numpy.uint8)
+            cv2.drawContours(mask, cnt, -1, 255, -1)
+            mean = cv2.mean(ogImage, mask=mask)
+            print(mean)
             
-            grain = numpy.int0(cv2.boxPoints(cv2.minAreaRect(cnt)))
-            centroid = grain[2][1] - (grain[2][1]-grain[0][1])//2, grain[2][0] - (grain[2][0]-grain[0][0])//2
-            print(centroid)
-            color = image[centroid]
-            print(image)
             form = Form(corners, area, 'red')
 
             # Draw result on image
