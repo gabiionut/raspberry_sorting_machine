@@ -42,6 +42,7 @@ def byForm(form):
         print("Hexagon")
 
 def bySize(form):
+    print(form.area)
     if (form.area <= 35792):
         print("Small")
         start()
@@ -53,7 +54,7 @@ def bySize(form):
 
 def byColor(form):
     # TODO: By color
-    print("By color")
+    print(form.color)
     
 
 def run(updateImageSignal, mode):

@@ -15,15 +15,14 @@ def getContours(img, imgContour, ogImage):
             approx = cv2.approxPolyDP(cnt, 0.02 * peri, True)
             corners = len(approx)
             area = int(area)
-            #x,y,w,h = cv2.boundingRect(cnt) # offsets - with this you get 'mask'
-            #cv2.rectangle(ogImage,(x,y),(x+w,y+h),(0,255,0),2)
-            #rint('Average color (BGR): ',numpy.array(cv2.mean(ogImage[y:y+h,x:x+w])).astype(numpy.uint8))
-            mask = numpy.zeros(img.shape, numpy.uint8)
-            cv2.drawContours(mask, cnt, -1, 255, -1)
-            mean = cv2.mean(ogImage, mask=mask)
-            print(mean)
             
-            form = Form(corners, area, 'red')
+            M = cv2.moments(cnt)
+            cX = int(M["m10"] / M["m00"])
+            cY = int(M["m01"] / M["m00"])
+            hsv = cv2.cvtColor(imgContour, cv2.COLOR_BGR2HSV)
+            color = hsv[cY][cX] * [2, 1/2.55, 1/2.55]
+            
+            form = Form(corners, area, color)
 
             # Draw result on image
             x, y, w, h = cv2.boundingRect(approx)

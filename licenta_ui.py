@@ -77,7 +77,7 @@ class Window(QWidget, QObject):
         self.radiobutton.sortingType = 3
         self.radiobutton.toggled.connect(self.onClicked)
         layout.addWidget(self.radiobutton, 2, 2)
-        self.showFullScreen()
+        #self.showFullScreen()
 
     def sliderMoved(self):
         print("Dial value = %i" % (self.dial.value()))
