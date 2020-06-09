@@ -9,7 +9,8 @@ def getContours(img, imgContour, ogImage):
     form = None
     for cnt in contours:
         area = cv2.contourArea(cnt)
-        areaMin = 5000
+        print(area)
+        areaMin = 50
         if area > areaMin:
             cv2.drawContours(imgContour, cnt, -1, (255, 0, 255), 7)
             peri = cv2.arcLength(cnt, True)
