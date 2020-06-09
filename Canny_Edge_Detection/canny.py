@@ -4,6 +4,7 @@ import argparse
 
 from sobel import sobel_edge_detection
 from gaussian_smoothing import gaussian_blur
+from get_contours import getContours
 
 import matplotlib.pyplot as plt
 
@@ -127,6 +128,10 @@ def hysteresis(image, weak):
 
     return final_image
 
+def show_image(image):
+    plt.imshow(image, cmap='gray')
+    plt.title("Canny Edge Detector")
+    plt.show()
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
@@ -135,22 +140,39 @@ if __name__ == '__main__':
     args = vars(ap.parse_args())
 
     image = cv2.imread(args["image"])
-    print(image)
 
     blurred_image = gaussian_blur(image, kernel_size=9, verbose=False)
+    show_image(blurred_image)
 
     edge_filter = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
 
     gradient_magnitude, gradient_direction = sobel_edge_detection(blurred_image, edge_filter, convert_to_degree=True, verbose=args["verbose"])
 
     new_image = non_max_suppression(gradient_magnitude, gradient_direction, verbose=args["verbose"])
+    show_image(new_image)
 
     weak = 50
 
     new_image = threshold(new_image, 5, 20, weak=weak, verbose=args["verbose"])
+    show_image(new_image)
 
     new_image = hysteresis(new_image, weak)
+    show_image(new_image)
 
-    plt.imshow(new_image, cmap='gray')
-    plt.title("Canny Edge Detector")
-    plt.show()
+    new_image = new_image.astype(np.uint8)
+    kernel = np.ones((5, 5))
+    imgDil = cv2.dilate(new_image, kernel, iterations=1)
+
+    # imgBlur = cv2.GaussianBlur(image, (7, 7), 1)
+    # imgGray = cv2.cvtColor(imgBlur, cv2.COLOR_BGR2GRAY)
+
+    # threshold1 = 40
+    # threshold2 = 40
+
+    # imgCanny = cv2.Canny(imgGray, threshold1, threshold2)
+    # kernel = np.ones((5, 5))
+    # imgDil = cv2.dilate(imgCanny, kernel, iterations=1)
+
+    form = getContours(imgDil, image, image)
+    print(form.corners)
+    show_image(show_image)
