@@ -5,6 +5,8 @@ import argparse
 from sobel import sobel_edge_detection
 from gaussian_smoothing import gaussian_blur
 from get_contours import getContours
+from picamera import PiCamera
+from resize import resize
 
 import matplotlib.pyplot as plt
 
@@ -137,7 +139,17 @@ if __name__ == '__main__':
 
     image = cv2.imread(args["image"])
 
+    # camera.capture('image.jpg')
+    # ogImg = cv2.imread('image.jpg')
+    # colorImg = ogImg.copy()
+    # image = resize(ogImg, 50)
+
+
     blurred_image = gaussian_blur(image, kernel_size=9, verbose=False)
+
+    # plt.imshow(blurred_image, cmap='gray')
+    # plt.title("Gaussian Blur")
+    # plt.show()
 
     edge_filter = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
 
@@ -153,7 +165,7 @@ if __name__ == '__main__':
 
     new_image = new_image.astype(np.uint8)
     kernel = np.ones((5, 5))
-    imgDil = cv2.dilate(new_image, kernel, iterations=1)
+    img_dil = cv2.dilate(new_image, kernel, iterations=1)
 
     # imgBlur = cv2.GaussianBlur(image, (7, 7), 1)
     # imgGray = cv2.cvtColor(imgBlur, cv2.COLOR_BGR2GRAY)
@@ -165,9 +177,9 @@ if __name__ == '__main__':
     # kernel = np.ones((5, 5))
     # imgDil = cv2.dilate(imgCanny, kernel, iterations=1)
 
-    form = getContours(imgDil, image, image)
+    form = getContours(img_dil, image, image)
     print(form.corners)
 
-    plt.imshow(imgDil, cmap='gray')
+    plt.imshow(img_dil, cmap='gray')
     plt.title("Canny Edge Detector")
     plt.show()
