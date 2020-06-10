@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-from stack_images import stackImages
 from get_contours import getContours
 from resize import resize
 from picamera import PiCamera
@@ -90,11 +89,14 @@ def run(updateImageSignal, mode, setLabelSignal):
     imgContour = imgContour[20:200, 0:500]
     
     cv2.imwrite('imageCrop.jpg', imgContour)
-
+    
     form = canny(imgContour)
+
     print(form.corners)
+    
     imgContour = resize(imgContour, 50)
     cv2.imwrite('output.jpg', imgContour)
     updateImageSignal.emit()
     classifyForm(form, mode, setLabelSignal)
+
 

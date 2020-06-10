@@ -27,7 +27,6 @@ class MyThread(Thread):
               print("Object detected")
               sleep(3)
               stop()
-              print("licenta:", self.mode)
               run(self.updateImageSignal, self.mode, self.setLabelSignal)
         
     def kill(self):

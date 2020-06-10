@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-from stack_images import stackImages
 from get_contours import getContours
 from resize import resize
 from picamera import PiCamera

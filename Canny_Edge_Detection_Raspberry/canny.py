@@ -5,12 +5,9 @@ import argparse
 from sobel import sobel_edge_detection
 from gaussian_smoothing import gaussian_blur
 from get_contours import getContours
-from picamera import PiCamera
 from resize import resize
 
 import matplotlib.pyplot as plt
-
-camera = PiCamera()
 
 def non_max_suppression(gradient_magnitude, gradient_direction, verbose):
     image_row, image_col = gradient_magnitude.shape
@@ -137,7 +134,7 @@ def canny(image):
 
     edge_filter = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
 
-    gradient_magnitude, gradient_direction = sobel_edge_detection(blurred_image, edge_filter, convert_to_degree=True, verbose=args["verbose"])
+    gradient_magnitude, gradient_direction = sobel_edge_detection(blurred_image, edge_filter, convert_to_degree=True, verbose=False)
 
     new_image = non_max_suppression(gradient_magnitude, gradient_direction, verbose=False)
 
@@ -150,10 +147,6 @@ def canny(image):
     new_image = new_image.astype(np.uint8)
     kernel = np.ones((5, 5))
     img_dil = cv2.dilate(new_image, kernel, iterations=1)
-
-    plt.imshow(img_dil, cmap='gray')
-    plt.title("Canny Edge Detector")
-    plt.show()
 
     form = getContours(img_dil, image, image)
     return form
