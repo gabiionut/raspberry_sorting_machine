@@ -5,12 +5,10 @@ import argparse
 from sobel import sobel_edge_detection
 from gaussian_smoothing import gaussian_blur
 from get_contours import getContours
-from picamera import PiCamera
 from resize import resize
 
 import matplotlib.pyplot as plt
 
-camera = PiCamera()
 
 def non_max_suppression(gradient_magnitude, gradient_direction, verbose):
     image_row, image_col = gradient_magnitude.shape
@@ -134,33 +132,25 @@ def hysteresis(image, weak):
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
-    #ap.add_argument("-i", "--image", required=True, help="Path to the image")
+    ap.add_argument("-i", "--image", required=True, help="Path to the image")
     ap.add_argument("-v", "--verbose", type=bool, default=False, help="Path to the image")
     args = vars(ap.parse_args())
 
-    #image = cv2.imread(args["image"])
-
-    camera.capture('image.jpg')
-    image = cv2.imread('image.jpg')
-    # colorImg = ogImg.copy()
-    image = resize(image, 50)
+    image = cv2.imread(args["image"])
 
 
-    blurred_image = gaussian_blur(image, kernel_size=9, verbose=False)
 
-    # plt.imshow(blurred_image, cmap='gray')
-    # plt.title("Gaussian Blur")
-    # plt.show()
+    blurred_image = gaussian_blur(image, kernel_size=9, verbose=args["verbose"])
 
     edge_filter = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
 
     gradient_magnitude, gradient_direction = sobel_edge_detection(blurred_image, edge_filter, convert_to_degree=True, verbose=args["verbose"])
 
-    new_image = non_max_suppression(gradient_magnitude, gradient_direction, verbose=False)
+    new_image = non_max_suppression(gradient_magnitude, gradient_direction, verbose=args["verbose"])
 
     weak = 50
 
-    new_image = threshold(new_image, 5, 20, weak=weak, verbose=False)
+    new_image = threshold(new_image, 5, 20, weak=weak, verbose=args["verbose"])
 
     new_image = hysteresis(new_image, weak)
 
@@ -168,15 +158,6 @@ if __name__ == '__main__':
     kernel = np.ones((5, 5))
     img_dil = cv2.dilate(new_image, kernel, iterations=1)
 
-    # imgBlur = cv2.GaussianBlur(image, (7, 7), 1)
-    # imgGray = cv2.cvtColor(imgBlur, cv2.COLOR_BGR2GRAY)
-
-    # threshold1 = 40
-    # threshold2 = 40
-
-    # imgCanny = cv2.Canny(imgGray, threshold1, threshold2)
-    # kernel = np.ones((5, 5))
-    # imgDil = cv2.dilate(imgCanny, kernel, iterations=1)
     plt.imshow(img_dil, cmap='gray')
     plt.title("Canny Edge Detector")
     plt.show()

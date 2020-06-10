@@ -18,7 +18,7 @@ def gaussian_kernel(size, sigma=1, verbose=False):
 
     if verbose:
         plt.imshow(kernel_2D, interpolation='none', cmap='gray')
-        plt.title("Kernel ( {}X{} )".format(size, size))
+        plt.title("Nucleul de convolutie Gaussian ( {}X{} )".format(size, size))
         plt.show()
 
     return kernel_2D

@@ -10,7 +10,7 @@ def getContours(img, imgContour, ogImage):
     for cnt in contours:
         area = cv2.contourArea(cnt)
         print(area)
-        areaMin = 50
+        areaMin = 5000
         if area > areaMin:
             cv2.drawContours(imgContour, cnt, -1, (255, 0, 255), 7)
             peri = cv2.arcLength(cnt, True)
@@ -35,7 +35,7 @@ def getContours(img, imgContour, ogImage):
                         (0, 255, 0), 2)
             
             plt.imshow(imgContour, cmap='gray')
-            plt.title("Canny Edge Detector")
+            plt.title("Detectarea marginilor folosind operatorul Canny")
             plt.show()
 
     return form

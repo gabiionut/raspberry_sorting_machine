@@ -15,7 +15,7 @@ def convolution(image, kernel, average=False, verbose=False):
 
     if verbose:
         plt.imshow(image, cmap='gray')
-        plt.title("Image")
+        plt.title("Imaginea alb-negru")
         plt.show()
 
     image_row, image_col = image.shape
@@ -32,7 +32,7 @@ def convolution(image, kernel, average=False, verbose=False):
 
     if verbose:
         plt.imshow(padded_image, cmap='gray')
-        plt.title("Padded Image")
+        plt.title("Imaginea cu padding")
         plt.show()
 
     for row in range(image_row):
