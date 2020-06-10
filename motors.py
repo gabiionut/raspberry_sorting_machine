@@ -19,14 +19,14 @@ r = GPIO.PWM(pinForwardBand, 100)
 def right():
     p.start(0)
     p.ChangeDutyCycle(100)
-    sleep(0.6)
+    sleep(1.3)
     p.stop()
     
 def left():
     print('Left')
     q.start(0)
     q.ChangeDutyCycle(100)
-    sleep(0.6)
+    sleep(1.3)
     q.stop()
     
 def start():
